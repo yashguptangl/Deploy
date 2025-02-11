@@ -3,9 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./button": "./src/button.tsx",
-    "./card": "./src/card.tsx",
-    "./code": "./src/code.tsx"
+    "./SortFilter": "./src/filterSort.tsx",
+    "./Footer": "./src/footer.tsx",
+    "./Home": "./src/homePage.tsx",
+    "./ImageUpload": "./src/imagesUpload.tsx",
+    "./MainFooter": "./src/mainfooter.tsx",
+    "./Navbar": "./src/navbar.tsx",
+    "./ComboBox": "./src/searchBox.tsx",
+    "./SideDetail": "./src/sidedetails.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -23,7 +28,10 @@
     "typescript": "5.7.3"
   },
   "dependencies": {
+    "@mui/material": "^6.4.3",
+    "@mui/styled-engine-sc": "^6.4.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "styled-components": "^6.1.15"
   }
 }

@@ -10,7 +10,28 @@ module.exports = {
       './src/**/*.{js,ts,jsx,tsx,mdx}',
     ],
     theme: {
-      extend: {},
+      extend: {
+        colors: {
+          background: "var(--background)",
+          foreground: "var(--foreground)",
+          blue :{
+            300 : "#17A2B8",    //lightblue     
+            400 : "#016481",   //blue
+            500 : "#67C2D0",    //loginblue
+            600 : "#0056B3"     //login darkblue
+          },
+          gray : {
+            400 : "#EDEBEC",    //lightgray
+            500 : "#CACACA",    //gray  
+            600 : "#7C7C7C"     //textgray
+          }
+        },
+        screens :{
+          ssm : "320px",
+          mod : "375px",
+          ml: "425px",
+        }
+      },
     },
     plugins: [],
   }
