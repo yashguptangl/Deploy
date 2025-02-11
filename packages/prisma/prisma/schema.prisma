@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model User {
+    id              Int      @id @default(autoincrement())  
+    username        String
+    email           String
+    mobile          String     @unique
+    password        String   
+    otp             Int
+    isPhoneVerified Boolean @default(false)
+    contactLogs ContactLog[]
+    wishlists   Wishlist[]
+}
+  
+model Owner {
+    id                Int       @id @default(autoincrement())  
+    username          String
+    email             String
+    mobile            String     @unique
+    password          String   
+    otp               Int
+    isPhoneVerified   Boolean   @default(false)
+    FlatInfo          FlatInfo[]
+    PgInfo            PgInfo[]
+    RoomInfo          RoomInfo[]
+    points            Int       @default(10)  // Initial points assigned
+    contactLogs       ContactLog[]
+}
+  
+model FlatInfo {
+    id                  Int        @id @default(autoincrement())
+    ownerId             Int
+    Type                String     @default("Flat")
+    owner               Owner      @relation(fields: [ownerId], references: [id])
+    city                String
+    townSector          String
+    location            String
+    landmark            String
+    BHK                 String
+    MaxPrice            String
+    MinPrice            String
+    Offer               String      
+    security            String
+    maintenance         String
+    totalFlat           Int
+    Adress              String
+    ageofProperty       String
+    waterSupply         String
+    powerBackup         String
+    noticePeriod        String
+    furnishingType      String
+    accomoType          String
+    parking             String[]
+    preferTenants       String[]
+    petsAllowed         Boolean
+    genderPrefer        String
+    flatType            String
+    careTaker           String
+    listingShowNo       String
+    flatInside          String[]
+    flatOutside         String[]
+    isVerified          Boolean   @default(false)
+    verificationPending Boolean   @default(true)
+    paymentDone         Boolean   @default(false)
+    isVisible           Boolean   @default(true) // Control visibility manually
+}
+  
+model PgInfo {
+    id                  Int        @id @default(autoincrement())
+    ownerId             Int
+    Type                String     @default("Pg")
+    owner               Owner      @relation(fields: [ownerId], references: [id])
+    city                String
+    townSector          String
+    location            String
+    landmark            String
+    BHK                 String
+    MinPrice            String
+    MaxPrice            String
+    adress              String
+    Offer               String
+    security            String
+    maintenance         String
+    totalPG             Int
+    ageofProperty       String
+    waterSupply         String
+    PGType              String
+    bedCount            Int
+    powerBackup         String
+    noticePeriod        String
+    furnishingType      String
+    accomoType          String
+    foodAvailable       Boolean
+    parking             String[]
+    preferTenants       String[]
+    genderPrefer        String
+    timeRestrict        Boolean
+    PGInside          String[]
+    PGOutside         String[]
+    careTaker           String
+    listingShowNo       String
+    isVerified          Boolean   @default(false)
+    verificationPending Boolean   @default(true)
+    paymentDone         Boolean   @default(false)
+    isVisible           Boolean   @default(true) // Control visibility manually
+}
+  
+model RoomInfo {
+    id                  Int        @id @default(autoincrement())
+    ownerId             Int
+    Type                String     @default("Room")
+    owner               Owner      @relation(fields: [ownerId], references: [id])
+    city                String
+    townSector          String
+    location            String
+    BHK                 String
+    landmark            String
+    MinPrice            String
+    MaxPrice            String
+    Offer               String
+    adress              String
+    security            String
+    maintenance         String
+    totalRoom           Int
+    ageofProperty       String
+    powerBackup         String
+    noticePeriod        String
+    waterSupply         String
+    furnishingType      String
+    accomoType          String
+    parking             String[]
+    preferTenants       String[]
+    genderPrefer        String
+    roomType            String
+    roomInside          String[]
+    roomOutside         String[]
+    careTaker           String
+    listingShowNo       String
+    RoomAvailable       String
+    isVerified          Boolean   @default(false)
+    verificationPending Boolean   @default(true)
+    paymentDone         Boolean   @default(false)
+    isVisible           Boolean   @default(true) // Control visibility manually
+}
+  
+  
+model Admin {
+    id        Int     @id @default(autoincrement()) 
+    name      String
+    email     String   @unique
+    password  String
+    role      String   // 'MAIN_ADMIN' or 'EMPLOYEE'
+    cities    String[] // Array of cities the employee can access
+}
+  
+model ContactLog {
+    id            Int      @id @default(autoincrement())
+    ownerId       Int
+    userId        Int
+    user          User     @relation(fields: [userId], references: [id])
+    owner         Owner    @relation(fields: [ownerId], references: [id])
+    listingId     Int
+    customerName  String
+    customerPhone String
+    ownerPhone    String
+    adress        String
+    accessDate    DateTime  
+    expiryDate    DateTime 
+    propertyType  String
+    isExpired     Boolean  @default(false) // Automatically expires after 30 days
+}
+
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  listingId Int
+  type      String  // "flat", "pg", "room"
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+}
