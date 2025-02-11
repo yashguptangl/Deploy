@@ -33,7 +33,7 @@ export default function User ({userId} : {userId: string}) {
           {wishlist.length === 0 ? (
             <p>No items in your Wishlist</p>
           ) : (
-            { wishlist.map((item : any) => (
+            { wishlist.wishlistItem.map((item : any) => (
                 <div className="bg-white flex flex-row md:flex-row items-center rounded-md shadow-md overflow-hidden">
                 <div>
                   <img
