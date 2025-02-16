@@ -36,8 +36,8 @@ export default function Verify() {
             });
             console.log("Verification successful:", response.data);
             router.push("/user/signin");
-        } catch (error: any) {
-            console.error("Error verifying:", error.response?.data || error.message);
+        } catch (error) {
+            console.error("Error verifying:", axios.isAxiosError(error) && error.response?.data);
         }
     };
 

@@ -5,14 +5,16 @@ import { citiesData } from "../../../data/cities";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { FormData } from "../../../types/formData";
 
-export default function FlatListingForm() {
+
+export default function PGListingForm() {
   const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormData>();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedTown, setSelectedTown] = useState("");
   const [token, setToken] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function FlatListingForm() {
   }, []);
 
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) : Promise<void> => {
     setIsSubmitting(true);
     try {
       const formData = {
@@ -68,9 +70,9 @@ export default function FlatListingForm() {
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 lg:p-10">
       <h2 className="text-xl sm:text-3xl font-semibold text-blue-500 mb-4 text-center">
-        I’m listing my PG
+        I&apos;m listing my PG
       </h2>
-      <h3 className="text-lg sm:text-2xl font-semibold">I'm Owner</h3>
+      <h3 className="text-lg sm:text-2xl font-semibold">I&apos;m Owner</h3>
 
       {/* Location and Details */}
       <form onSubmit={handleSubmit(onSubmit)} >
@@ -124,14 +126,14 @@ export default function FlatListingForm() {
                 {label}
               </label>
               <input
-                {...register(name, { required: `${label} is required` })}
+                {...register(name as keyof FormData, { required: `${label} is required` })}
                 id={name}
                 type={type}
                 name={name}
                 className="w-2/3 sm:w-[24rem] border border-gray-600 rounded p-1.5 text-sm sm:text-base placeholder-gray-500"
                 placeholder={`Enter ${label.toLowerCase()}`}
               />
-              {errors[name] && <span className="text-red-500 text-sm">{String(errors[name]?.message)}</span>}
+              {errors[name as keyof FormData] && <span className="text-red-500 text-sm">{String(errors[name as keyof FormData]?.message)}</span>}
             </div>
           ))}
            <div className="flex items-center gap-4">
@@ -143,7 +145,7 @@ export default function FlatListingForm() {
               className="w-2/3  sm:w-[24rem] border border-gray-600 rounded p-1.5 text-sm sm:text-base resize-none placeholder-gray-500"
               placeholder="Care Taker Name"
             />
-            {errors.description && <span className="text-red-500 text-sm">{String(errors.description?.message)}</span>}
+            {errors.careTaker && <span className="text-red-500 text-sm">{String(errors.careTaker?.message)}</span>}
            </div>
 
           {/* Full Address Textarea */}
@@ -157,7 +159,7 @@ export default function FlatListingForm() {
               rows={4}
               placeholder="Enter full address"
             />
-            {errors.fullAddress && <span className="text-red-500 text-sm">{String(errors.fullAddress?.message)}</span>}
+            {errors.adress && <span className="text-red-500 text-sm">{String(errors.adress?.message)}</span>}
           </div>
         </div>
 
@@ -204,7 +206,7 @@ export default function FlatListingForm() {
                   className="flex items-center gap-2 text-sm sm:text-base font-medium "
                 >
                   <input
-                    {...register(name, { required: `${title} is required` })}
+                    {...register(name as keyof FormData, { required: `${title} is required` })}
                     type="radio"
                     name={name}
                     value={option} />
@@ -212,7 +214,7 @@ export default function FlatListingForm() {
                 </label>
               ))}
             </div>
-            {errors[name] && <span className="text-red-500 text-sm">{String(errors[name]?.message)}</span>}
+            {errors[name as keyof FormData] && <span className="text-red-500 text-sm">{String(errors[name as keyof FormData]?.message)}</span>}
           </div>
         ))}
 
@@ -251,7 +253,7 @@ export default function FlatListingForm() {
                   className="flex items-center gap-2 text-sm sm:text-base font-medium text-blue-400"
                 >
                   <input
-                    {...register(name)}
+                    {...register(name as keyof FormData)}
                     type={isMultiple ? "checkbox" : "radio"} // Adjust type for multiple selections
                     value={option}
                   />
@@ -259,8 +261,8 @@ export default function FlatListingForm() {
                 </div>
               ))}
             </div>
-            {errors[name] && (
-              <span className="text-red-500 text-sm">{String(errors[name]?.message)}</span>
+            {errors[name as keyof FormData] && (
+              <span className="text-red-500 text-sm">{String(errors[name as keyof FormData]?.message)}</span>
             )}
           </div>
         ))}

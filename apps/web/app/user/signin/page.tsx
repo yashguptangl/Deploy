@@ -48,17 +48,17 @@ export default function LoginSignup() {
       alert("Login successful!");
   
       router.push("/");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error logging in:", error);
   
-      if (error.response?.status === 403) {
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
         alert("Account not verified. Redirecting to verification page.");
         router.push("/user/verify");
-      } else if (error.response?.status === 401) {
+      } else if ( axios.isAxiosError(error) && error.response?.status === 401) {
         alert("Account not found. Redirecting to signup.");
         router.push("/user/signup");
       } else {
-        alert(error.response?.data?.message || "An error occurred. Please try again.");
+        alert( axios.isAxiosError(error) && error.response?.data?.message || "An error occurred. Please try again.");
       }
     }
   };

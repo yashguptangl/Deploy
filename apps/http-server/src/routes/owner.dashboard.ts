@@ -18,7 +18,7 @@ const verifyToken = (token: string) => {
 
 ownerDashboard.post("/contact-owner",authenticate , async (req: AuthenticatedRequest, res: Response): Promise<any> => {
     try {
-        const { propertyId, propertyType, ownerId, adress  } = req.body;
+        const { propertyId, propertyType, ownerId, address  } = req.body;
         const token = req.headers.token as string;
         console.log(token);
         console.log(req.body);
@@ -49,10 +49,11 @@ ownerDashboard.post("/contact-owner",authenticate , async (req: AuthenticatedReq
                 listingId : propertyId,
                 customerName: username,
                 customerPhone: mobile,
-                adress,
+                adress : address,
                 accessDate: new Date(),
                 isExpired: false,
                 propertyType,
+                ownerName: owner.username,
                 ownerPhone: owner.mobile,
                 expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Valid for 30 days
             },
