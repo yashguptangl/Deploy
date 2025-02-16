@@ -1,27 +1,32 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import Bedroom from "../../../assets/bedroom.jpg";
 import Customer from "../../../assets/customer.png";
 import Delete from "../../../assets/delete.png";
 import axios from "axios";
 import Link from "next/link";
+import Image from "next/image";
+import { LeadLog } from "../../../types/lead";
+import { ListingItem } from "../../../types/listing";
+
 type Tab = "guide" | "myRental" | "usedLead";
 
-export default function Dashboard(prop: any) {
+interface UsedLeadsResponse {
+  logs: LeadLog[];
+}
+
+export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("myRental"); // Default active tab
   const [showModal, setShowModal] = useState(false); // Show/Hide modal
   const [leads, setLeads] = useState(10); // Default number of leads
   const [price, setPrice] = useState(leads * 5); // Calculate price based on leads
   const [isRentalListOpen, setIsRentalListOpen] = useState(false);
-  const [listings, setListings] = useState<any[]>([]); // Ensure listings is always an array
-  const [token, setToken] = useState<string | null>(null);
+  const [listings, setListings] = useState<ListingItem[]>([]); // Ensure listings is always an array
   const [points, setPoints] = useState("");
-  const [usedLeads, setUsedLeads] = useState<any[]>([]);
-
+  const [usedLeads, setUsedLeads] = useState<UsedLeadsResponse>({ logs: [] });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setToken(token);
 
     if (token) {
       // Decode the payload
@@ -29,26 +34,25 @@ export default function Dashboard(prop: any) {
       const payload = payloadBase64 ? JSON.parse(atob(payloadBase64)) : null; // Decode Base64
       console.log("Payload:", payload);
 
-      // Fetch listings using the id from payload
-      fetchListings(token, payload.owner.id);
-      usedLeadData(token, payload.owner.id);
+      if (payload?.owner?.id) {
+        fetchListings(token, payload.owner.id);
+        usedLeadData(token, payload.owner.id);
+      }
     }
   }, []);
 
-
-
   const usedLeadData = async (token: string, ownerId: string) => {
     try {
-      const leadResponse = await axios.get(`http://localhost:3000/api/v1/owner/contact-logs/${ownerId}`,
-        { headers: { token } }
-      )
+      const leadResponse = await axios.get(
+        `http://localhost:3000/api/v1/owner/contact-logs/${ownerId}`,
+        { headers: { token: token } }
+      );
       setUsedLeads(leadResponse.data);
       console.log("Used Leads:", leadResponse.data);
     } catch (err) {
       console.error("Error fetching used leads:", err);
     }
-  }
-
+  };
 
   const fetchListings = async (token: string, ownerId: string) => {
     try {
@@ -61,9 +65,9 @@ export default function Dashboard(prop: any) {
       setPoints(points);
 
       const combinedListings = [
-        ...await mapListing(FlatInfo, "flat", token),
-        ...await mapListing(PgInfo, "pg", token),
-        ...await mapListing(RoomInfo, "room", token),
+        ...(await mapListing(FlatInfo, "flat", token)),
+        ...(await mapListing(PgInfo, "pg", token)),
+        ...(await mapListing(RoomInfo, "room", token)),
       ];
 
       setListings(combinedListings);
@@ -73,26 +77,28 @@ export default function Dashboard(prop: any) {
     }
   };
 
-  const mapListing = async (data: any[], type: string, token: string): Promise<any[]> => {
-    return Promise.all(data.map(async item => {
-      const insideImageUrl = await fetchInsideImage(type, item.id, token);
-      console.log(`Fetched image URL for ${type}-${item.id}: ${insideImageUrl}`);
-      return {
-        id: `${type}-${item.id}`,
-        uniq: item.id,
-        type,
-        imageUrl: insideImageUrl || item.imageUrl || Bedroom.src,
-        location: item.location,
-        townSector: item.townSector,
-        city: item.city,
-        Bhk: item.BHK,
-        security: item.security,
-        minprice: item.MinPrice,
-        maxprice: item.MaxPrice,
-        isVisible: item.isVisible,
-        isVerified: item.isVerified,
-      };
-    }));
+  const mapListing = async (data: ListingItem[], type: string, token: string): Promise<ListingItem[]> => {
+    return Promise.all(
+      data.map(async (item) => {
+        const insideImageUrl = await fetchInsideImage(type, item.id, token);
+        console.log(`Fetched image URL for ${type}-${item.id}: ${insideImageUrl}`);
+        return {
+          id: `${type}-${item.id}`,
+          uniq: item.id,
+          type,
+          imageUrl: insideImageUrl || item.imageUrl || Bedroom.src,
+          location: item.location,
+          townSector: item.townSector,
+          city: item.city,
+          BHK: item.BHK,
+          security: item.security,
+          MinPrice: item.MinPrice,
+          MaxPrice: item.MaxPrice,
+          isVisible: item.isVisible,
+          isVerified: item.isVerified,
+        };
+      })
+    );
   };
 
   const fetchInsideImage = async (type: string, uniq: string, token: string) => {
@@ -110,23 +116,20 @@ export default function Dashboard(prop: any) {
       return fullImageUrl; // Return the full image URL
     } catch (e) {
       console.error("Error fetching inside image:", e);
-      return null;
+      return Bedroom.src; // Return fallback image URL
     }
   };
 
-  const toggleButton = (listingId: any) => {
-    setListings((prevListings: any) =>
-      prevListings.map((listing: any) =>
+  const toggleButton = (listingId: string) => {
+    setListings((prevListings) =>
+      prevListings.map((listing) =>
         listing.id === listingId ? { ...listing, isVisible: !listing.isVisible } : listing
       )
     );
   };
 
-
-
-
-  const handleLeadChange = (e: any) => {
-    const value = Math.max(10, e.target.value); // Minimum value is 10
+  const handleLeadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(10, parseInt(e.target.value)); // Minimum value is 10
     setLeads(value);
     setPrice(value * 5); // Update price
   };
@@ -192,28 +195,31 @@ export default function Dashboard(prop: any) {
       <div className="flex justify-between border-b border-gray-300 bg-blue-400">
         <button
           onClick={() => setActiveTab("guide")}
-          className={`flex-1 text-center py-2 font-semibold ${activeTab === "guide"
+          className={`flex-1 text-center py-2 font-semibold ${
+            activeTab === "guide"
               ? "text-blue-500 border-b-3 border-blue-500"
               : "text-white"
-            }`}
+          }`}
         >
           Guide
         </button>
         <button
           onClick={() => setActiveTab("myRental")}
-          className={`flex-1 text-center py-2 font-semibold ${activeTab === "myRental"
+          className={`flex-1 text-center py-2 font-semibold ${
+            activeTab === "myRental"
               ? "text-blue-500 border-b-3 border-blue-500"
               : "text-white"
-            }`}
+          }`}
         >
           My Rentals
         </button>
         <button
           onClick={() => setActiveTab("usedLead")}
-          className={`flex-1 text-center py-2 font-semibold ${activeTab === "usedLead"
+          className={`flex-1 text-center py-2 font-semibold ${
+            activeTab === "usedLead"
               ? "text-blue-500 border-b-2 border-blue-500"
               : "text-white"
-            }`}
+          }`}
         >
           Used Lead
         </button>
@@ -235,25 +241,27 @@ export default function Dashboard(prop: any) {
             {listings.length === 0 ? (
               <p>No Listings Available</p>
             ) : (
-              listings.map((listing: any) => (
+              listings.map((listing) => (
                 <div
                   key={listing.id}
                   className="bg-white flex flex-col w-72 rounded-md shadow-md overflow-hidden mb-4"
                 >
-                  <div>
+                  <div className="relative mod:w-72 mod:h-36 ssm:h-36 ssm:w-72 md:h-40 md:w-72 w-full sm:w-44 h-40">
                     {listing.isVisible ? (
-                      <img
+                      <Image
                         src={listing.imageUrl}
+                        fill
                         alt="Room"
-                        className="w-full sm:w-44 h-40 object-cover p-2 md:h-40 md:w-72 rounded-xl mod:w-72 mod:h-36 ssm:h-36 ssm:w-72"
+                        className=" object-cover p-2  rounded-xl "
                         onError={(e) => {
                           e.currentTarget.src = Bedroom.src; // Fallback image
                         }}
                       />
                     ) : (
-                      <img
+                      <Image
                         src={listing.imageUrl}
                         alt="Room"
+                        fill
                         className="w-full sm:w-44 h-40 object-cover p-2 md:h-40 md:w-72 rounded-xl mod:w-72 mod:h-36 ssm:h-36 ssm:w-72 opacity-50"
                         onError={(e) => {
                           e.currentTarget.src = Bedroom.src; // Fallback image
@@ -268,8 +276,9 @@ export default function Dashboard(prop: any) {
                     <button
                       onClick={() => toggleButton(listing.id)}
                       id={`publish-${listing.id}`}
-                      className={`px-1 py-0.5 rounded-lg text-white text-xs w-8 ${listing.isVisible ? "bg-green-500" : "bg-red-500"
-                        }`}
+                      className={`px-1 py-0.5 rounded-lg text-white text-xs w-8 ${
+                        listing.isVisible ? "bg-green-500" : "bg-red-500"
+                      }`}
                     >
                       {listing.isVisible ? "on" : "off"}
                     </button>
@@ -280,18 +289,19 @@ export default function Dashboard(prop: any) {
                       {listing.location}, {listing.townSector}, {listing.city}
                     </p>
                     <h2 className="text-xl font-medium ssm:text-xs mod:text-base">
-                      {listing.Bhk} BHK {listing.type} | Security {listing.security}{" "}
+                      {listing.BHK} BHK {listing.type} | Security {listing.security}{" "}
                     </h2>
                     <p className="text-green-600 font-medium text-sm">
-                      Rent : {listing.minprice} - {listing.maxprice}
+                      Rent : {listing.MinPrice} - {listing.MaxPrice}
                     </p>
                     <p className="text-sm ">
                       {listing.isVisible ? "Listing is show in web" : "Listing is off"}
                     </p>
 
                     <button
-                      className={`mt-1.5 rounded-md text-white text-sm ssm:text-sm ssm:p-2 w-full ${listing.isVerified ? "bg-blue-600" : "bg-red-600"
-                        }`}
+                      className={`mt-1.5 rounded-md text-white text-sm ssm:text-sm ssm:p-2 w-full ${
+                        listing.isVerified ? "bg-blue-600" : "bg-red-600"
+                      }`}
                     >
                       {listing.isVerified ? "Verified" : "Pending Verification"}
                     </button>
@@ -312,17 +322,18 @@ export default function Dashboard(prop: any) {
             {usedLeads.logs.length === 0 ? (
               <p className="text-center">No leads available</p>
             ) : (
-              usedLeads.logs.map((lead: any) => (
+              usedLeads.logs.map((lead: LeadLog) => (
                 <div key={lead.id} className="bg-white rounded-md shadow-md p-4 mb-4">
                   <p className="p-2 text-base flex items-center justify-center ">
                     Address: {lead.adress}
                   </p>
                   <div className="flex items-center justify-center gap-8 p-2 border-b border-gray-300 ">
-                    <div className="flex items-center space-x-2">
-                      <img
+                    <div className="flex items-center space-x-2 w-10 h-10">
+                      <Image
+                        fill
                         src={Customer.src}
                         alt={lead.customerName}
-                        className="w-10 h-10 rounded-full"
+                        className="object-contain rounded-full"
                       />
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">{lead.customerName}</span>
@@ -334,10 +345,13 @@ export default function Dashboard(prop: any) {
                       <button className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
                         Call
                       </button>
-                      <img
+
+                      <Image
                         src={Delete.src}
                         alt="Delete"
-                        className="w-8 h-8 cursor-pointer"
+                        className="cursor-pointer"
+                        height={30}
+                        width={30}
                       />
                     </div>
                   </div>
@@ -355,22 +369,13 @@ export default function Dashboard(prop: any) {
 
               {/* Links to Rentals */}
               <div className="space-y-4 text-center flex flex-col">
-                <Link
-                  className="text-blue-500 hover:underline"
-                  href="/owner/flat"
-                >
+                <Link className="text-blue-500 hover:underline" href="/owner/flat">
                   FLAT
                 </Link>
-                <Link
-                  className="text-blue-500 hover:underline"
-                  href="/owner/room"
-                >
+                <Link className="text-blue-500 hover:underline" href="/owner/room">
                   ROOM
                 </Link>
-                <Link
-                  className="text-blue-500 hover:underline"
-                  href="/owner/pg"
-                >
+                <Link className="text-blue-500 hover:underline" href="/owner/pg">
                   PG
                 </Link>
               </div>

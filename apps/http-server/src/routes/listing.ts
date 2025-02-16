@@ -55,7 +55,7 @@ listingRouter.get("/search", async (req: Request, res: Response): Promise<any> =
       listings.map(async (listing) => {
         const imageUrls = await Promise.all(
           imageCategories.map(async (category) => {
-            const key = `images/${looking_for}/${listing.id}/${category}.jpeg`;
+            const key = `images/${looking_for}/${listing.id},/${category}.jpeg`;
             return await getObjectURL(key); // Fetch signed URL from S3
           })
         );

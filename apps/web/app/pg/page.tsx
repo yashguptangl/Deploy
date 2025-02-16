@@ -41,7 +41,7 @@ function Listing() {
     sessionStorage.setItem("selectedListing", JSON.stringify(listing));
 
     // Navigate to the listing detail page
-    router.push(`/flat/${listing.id}`);
+    router.push(`/pg/${listing.id}`);
   };
 
   const token = localStorage.getItem("token");

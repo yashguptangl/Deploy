@@ -47,9 +47,12 @@ export default function Signup() {
 
       console.log("Signup successful:", response.data); // Logs the response from the server
       router.push("/user/verify");
-    } catch (error: any) {
-      console.error("Signup error:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "An error occurred during signup.");
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            alert(error.response.data?.message || "Error resending OTP.");
+        } else {
+            alert("An error occurred during signup.");
+        }
     }
   };
 

@@ -20,10 +20,12 @@ export default function Verify() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<VerifyFormValues>({
     resolver: zodResolver(verifySchema),
   });
+  const [resendLoading, setResendLoading] = useState(false);
+
   const onSubmit = async (data: VerifyFormValues) => {
     try {
       console.log("Data being sent to API:", data);
@@ -36,12 +38,12 @@ export default function Verify() {
       );
       console.log("Verification successful:", response.data);
       router.push("/owner/signin");
-    } catch (error: any) {
-      console.error("Error verifying:", error.response?.data || error.message);
+    } catch (error) {
+      console.error("Error verifying:", axios.isAxiosError(error) && error.response?.data);
     }
   };
-  const handleResendOTP = async (data: VerifyFormValues): Promise<any> => {
-    const [resendLoading, setResendLoading] = useState(false);
+
+  const handleResendOTP = async (data: VerifyFormValues) => {
     try {
       setResendLoading(true);
       const response = await axios.post(
@@ -61,6 +63,7 @@ export default function Verify() {
       setResendLoading(false);
     }
   };
+
   return (
     <>
       <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-8">
@@ -74,8 +77,8 @@ export default function Verify() {
         </div>
 
         <div className="flex items-center justify-center px-4 w-full mt-6 max-w-lg mod:w-[24rem] lg:max-w-sm lg:mt-5 lg:m-32">
-          <div className="bg-white px-8  pb-24 pt-14 border border-gray-600 shadow-lg mb-32 rounded-lg w-80">
-            <h2 className=" font-semibold text-center mb-6">
+          <div className="bg-white px-8 pb-24 pt-14 border border-gray-600 shadow-lg mb-32 rounded-lg w-80">
+            <h2 className="font-semibold text-center mb-6">
               Enter Your Mobile Number
             </h2>
 
@@ -102,20 +105,23 @@ export default function Verify() {
                 {isSubmitting ? "Verifying..." : "Verify"}
               </button>
 
-              <div className="mt-6 ">
+              <div className="mt-6">
                 <p className="font-normal">
                   Create an Account{" "}
                   <Link
-                  href="/owner/signup"
-                  className="text-blue-600 font-semibold ml-1 cursor-pointer hover:underline">
+                    href="/owner/signup"
+                    className="text-blue-600 font-semibold ml-1 cursor-pointer hover:underline"
+                  >
                     Sign Up
                   </Link>
                 </p>
                 <p className="font-normal">
                   Resend{" "}
-                  <Link href="#"
-                  onClick={handleSubmit(handleResendOTP)}
-                  className="text-blue-600 font-semibold ml-1 cursor-pointer hover:underline">
+                  <Link
+                    href="#"
+                    onClick={handleSubmit(handleResendOTP)}
+                    className={`text-blue-600 font-semibold ml-1 cursor-pointer hover:underline ${resendLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
                     OTP
                   </Link>
                 </p>

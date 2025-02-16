@@ -15,59 +15,60 @@ const loginSchema = z.object({
     mobile: z.string().regex(/^\d{10}$/, "Mob no must be 10 digits"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 });
-  
+
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function LoginSignUp ({title , titleDetail , word} : {title: string, titleDetail: string, word: string}) {
+export default function LoginSignUp() {
     const {
         register,
         handleSubmit,
-        formState: { errors , isSubmitting},
-      } = useForm<LoginFormValues>({
+        formState: { isSubmitting },
+    } = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
-      });
-      const router = useRouter();
-    
-      // Handle form submission
-      const onSubmit = async (data: LoginFormValues) => {
-        try {
-          const response = await axios.post(
-            "http://localhost:3000/api/v1/owner/login",
-            data,
-            { 
-              headers: { "Content-Type": "application/json"
-            },
-            }
-          );
-      
-          if (response.status === 403) {
-            // Redirect to verify page for unverified accounts
-            router.push("/owner/verify");
-            return; // Stop further execution
-          }
-      
-          const { token } = response.data;
-          
-          localStorage.setItem("token" , token);
+    });
+    const router = useRouter();
 
-          alert("Login successful!");
-          // Redirect to dashboard
-          router.push("/owner/dashboard");
-        } catch (error: any) {
-          console.error("Error logging in:", error);
-      
-          if (error.response?.status === 403) {
-            alert("Account not verified. Redirecting to verification page.");
-            router.push("/owner/verify");
-          } else if (error.response?.status === 401) {
-            alert("Account not found. Redirecting to signup.");
-            router.push("/owner/signup");
-          } else {
-            alert(error.response?.data?.message || "An error occurred. Please try again.");
-          }
+    // Handle form submission
+    const onSubmit = async (data: LoginFormValues) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/v1/owner/login",
+                data,
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                }
+            );
+
+            if (response.status === 403) {
+                // Redirect to verify page for unverified accounts
+                router.push("/owner/verify");
+                return; // Stop further execution
+            }
+
+            const { token } = response.data;
+
+            localStorage.setItem("token", token);
+
+            alert("Login successful!");
+            // Redirect to dashboard
+            router.push("/owner/dashboard");
+        } catch (error) {
+            console.error("Error logging in:", error);
+
+            if (axios.isAxiosError(error) && error.response?.status === 403) {
+                alert("Account not verified. Redirecting to verification page.");
+                router.push("/owner/verify");
+            } else if ( axios.isAxiosError(error) && error.response?.status === 401) {
+                alert("Account not found. Redirecting to signup.");
+                router.push("/owner/signup");
+            } else {
+                alert(axios.isAxiosError(error) && error.response?.data?.message || "An error occurred. Please try again.");
+            }
         }
-      };
-      
+    };
+
     return (
         <>
             <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-8 mb-24">

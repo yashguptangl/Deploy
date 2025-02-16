@@ -9,7 +9,7 @@ export default function Upload() {
   const [uploadedFiles, setUploadedFiles] = useState<{
     [key: string]: File | null;
   }>({});
-  const [pgId, setPgId] = useState(localStorage.getItem("pgId"));
+  const pgId = useState(localStorage.getItem("pgId"));
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {

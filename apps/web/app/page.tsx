@@ -1,4 +1,8 @@
+
 "use client";
+import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import banglore from "../assets/Banglore.jpg";
 import dehradun from "../assets/dehradun.jpg";
 import delhi from "../assets/delhi.jpg";
@@ -7,22 +11,17 @@ import hydrabad from "../assets/Hydrabad.jpg";
 import gurugram from "../assets/Gurugram.jpg";
 import mumbai from "../assets/Mumbai.jpg";
 import noida from "../assets/Noida.jpg";
-import ComboBox from "../components/searchBox";
-import { citiesData } from "../data/cities";
-import { useState } from "react";
 import rent from "../assets/ad-rent.png";
-import { useRouter } from "next/navigation";
+import ComboBox from "../components/searchBox";
 import Navbar from "../components/navbar";
 import MainFooter from "../components/mainfooter";
-
-
+import { citiesData } from "../data/cities";
 
 export default function Home() {
   const [lookingFor, setLookingFor] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedTownSector, setSelectedTownSector] = useState("");
-  const router = useRouter();  
-  
+  const router = useRouter();
 
   const handleTownChange = (townSector: string) => {
     setSelectedTownSector(townSector);
@@ -30,26 +29,33 @@ export default function Home() {
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
-    setSelectedTownSector(""); // Reset town/sector when city changes
+    setSelectedTownSector("");
   };
 
-  const handleSearch = () =>{
-    router.push(`/${lookingFor}?look=${lookingFor}&city=${selectedCity}&townSector=${selectedTownSector}`)
-  }
+  const handleSearch = () => {
+    router.push(`/${lookingFor}?look=${lookingFor}&city=${selectedCity}&townSector=${selectedTownSector}`);
+  };
 
   return (
     <>
       <Navbar />
-      <div className="flex overflow-x-auto scrollbar-hide gap-2.5 ml-1 mt-4 px-4 snap-x snap-mandatory">
+      <div className="flex overflow-x-auto scrollbar-hide gap-3 ml-1 mt-4 px-4 snap-x snap-mandatory lg:pl-20">
         {[banglore, dehradun, delhi, gaziabad, hydrabad, gurugram, mumbai, noida].map((image, index) => (
-          <img
+          <div
             key={index}
-            className="h-25 w-[calc(100%/3)] mod:w-[calc(100%/3)] md:w-[calc(100%/6)] lg:w-[calc(100%/9)] flex-shrink-0 object-cover snap-start"
-            src={image.src}
-            alt={`City ${index + 1}`}
-          />
+            className="relative h-24 w-[calc(100%/3)] mod:w-[calc(100%/3)] md:w-[calc(100%/6)] lg:w-[calc(100%/9)] flex-shrink-0"
+          >
+            <Image
+              src={image}
+              alt={`City ${index + 1}`}
+              fill
+              priority
+              className="object-cover snap-start "
+            />  
+          </div>
         ))}
       </div>
+
 
       <div className="flex flex-col items-center justify-center mt-14 space-y-4 text-black-300 px-4">
         <p className="bg-gray-500 px-3 py-1 rounded text-left relative font-medium ssm:mr-[11.5rem] mod:mr-[15.5rem] ml:mr-[18.5rem] sm:mr-[18rem] top-4">
@@ -71,37 +77,28 @@ export default function Home() {
           </select>
         </div>
 
-        <ComboBox
-          options={Object.keys(citiesData)}
-          placeholder="City"
-          onChange={handleCityChange}
-        />
+        <ComboBox options={Object.keys(citiesData)} placeholder="City" onChange={handleCityChange} />
+        <ComboBox options={selectedCity && citiesData[selectedCity] ? citiesData[selectedCity] : []} placeholder="Town & Sector" onChange={handleTownChange} />
 
-        <ComboBox
-          options={selectedCity && citiesData[selectedCity] ? citiesData[selectedCity] : []}
-          placeholder="Town & Sector"
-          onChange={handleTownChange}
-        />
-
-        <button
-          className="w-full sm:w-96 bg-blue-300 text-white p-1 text-lg sm:text-xl rounded-lg"
-          onClick={handleSearch}
-        >
-          Let's Search ...
+        <button className="w-full sm:w-96 bg-blue-300 text-white p-1 text-lg sm:text-xl rounded-lg" onClick={handleSearch}>
+          Let&apos;s Search ...
         </button>
-        <img
-          src={rent.src}
-          alt="sec"
-          onClick={() => router.push("/owner/signin")}
-          className="h-6 ml-28 ssm:ml-32 mod:ml-44 ml:ml-56 "
-        />
+
+        <div className="h-6 w-40 ml-28 ssm:ml-32 mod:ml-44 ml:ml-56 relative">
+          <Image
+            src={rent}
+            alt="sec"
+            layout="fill"
+            objectFit="contain"
+            onClick={() => router.push("/owner/signin")}
+          />
+        </div>
+
         <div className="text-end mt-4">
           <p className="text-blue-300 text-lg ml-20 ssm:ml-6 mod:ml-20 sm:ml-28 ml:ml-32 sm:text-lg md:text-xl font-semibold">
-            India's Largest Room Collection
+            India&apos;s Largest Room Collection
           </p>
-          <p className="font-semibold text-lg sm:text-end md:text-lg ">
-            Trust on Verified Rooms
-          </p>
+          <p className="font-semibold text-lg sm:text-end md:text-lg ">Trust on Verified Rooms</p>
         </div>
       </div>
       <MainFooter />
