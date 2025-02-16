@@ -10,12 +10,12 @@ import { LeadLog } from "../../../types/lead";
 import { ListingItem } from "../../../types/listing";
 
 type Tab = "guide" | "myRental" | "usedLead";
+import { LeadLog } from "../../../types/lead";
+import Image from "next/image";
+import { ListingItem } from "../../../types/listing";
 
-interface UsedLeadsResponse {
-  logs: LeadLog[];
-}
 
-export default function Dashboard() {
+export default function Dashboard(prop: any) {
   const [activeTab, setActiveTab] = useState<Tab>("myRental"); // Default active tab
   const [showModal, setShowModal] = useState(false); // Show/Hide modal
   const [leads, setLeads] = useState(10); // Default number of leads
@@ -23,7 +23,8 @@ export default function Dashboard() {
   const [isRentalListOpen, setIsRentalListOpen] = useState(false);
   const [listings, setListings] = useState<ListingItem[]>([]); // Ensure listings is always an array
   const [points, setPoints] = useState("");
-  const [usedLeads, setUsedLeads] = useState<UsedLeadsResponse>({ logs: [] });
+  const [usedLeads, setUsedLeads] = useState<any[]>([]);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,19 +35,19 @@ export default function Dashboard() {
       const payload = payloadBase64 ? JSON.parse(atob(payloadBase64)) : null; // Decode Base64
       console.log("Payload:", payload);
 
-      if (payload?.owner?.id) {
-        fetchListings(token, payload.owner.id);
-        usedLeadData(token, payload.owner.id);
-      }
+      // Fetch listings using the id from payload
+      fetchListings(token, payload.owner.id);
+      usedLeadData(token, payload.owner.id);
     }
   }, []);
 
+
+
   const usedLeadData = async (token: string, ownerId: string) => {
     try {
-      const leadResponse = await axios.get(
-        `http://localhost:3000/api/v1/owner/contact-logs/${ownerId}`,
-        { headers: { token: token } }
-      );
+      const leadResponse = await axios.get(`http://localhost:3000/api/v1/owner/contact-logs/${ownerId}`,
+        { headers: { token } }
+      )
       setUsedLeads(leadResponse.data);
       console.log("Used Leads:", leadResponse.data);
     } catch (err) {
@@ -77,34 +78,32 @@ export default function Dashboard() {
     }
   };
 
-  const mapListing = async (data: ListingItem[], type: string, token: string): Promise<ListingItem[]> => {
-    return Promise.all(
-      data.map(async (item) => {
-        const insideImageUrl = await fetchInsideImage(type, item.id, token);
-        console.log(`Fetched image URL for ${type}-${item.id}: ${insideImageUrl}`);
-        return {
-          id: `${type}-${item.id}`,
-          uniq: item.id,
-          type,
-          imageUrl: insideImageUrl || item.imageUrl || Bedroom.src,
-          location: item.location,
-          townSector: item.townSector,
-          city: item.city,
-          BHK: item.BHK,
-          security: item.security,
-          MinPrice: item.MinPrice,
-          MaxPrice: item.MaxPrice,
-          isVisible: item.isVisible,
-          isVerified: item.isVerified,
-        };
-      })
-    );
+  const mapListing = async (data: any[], type: string, token: string): Promise<any[]> => {
+    return Promise.all(data.map(async item => {
+      const insideImageUrl = await fetchInsideImage(type, item.id, token);
+      console.log(`Fetched image URL for ${type}-${item.id}: ${insideImageUrl}`);
+      return {
+        id: `${type}-${item.id}`,
+        uniq: item.id,
+        type,
+        imageUrl: insideImageUrl || item.imageUrl || Bedroom.src,
+        location: item.location,
+        townSector: item.townSector,
+        city: item.city,
+        Bhk: item.BHK,
+        security: item.security,
+        minprice: item.MinPrice,
+        maxprice: item.MaxPrice,
+        isVisible: item.isVisible,
+        isVerified: item.isVerified,
+      };
+    }));
   };
 
   const fetchInsideImage = async (type: string, uniq: string, token: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/owner/images/${type}/${uniq}`,
+        `http://localhost:3000/api/v1/owner/images/${type}/${uniq},`,
         {
           headers: {
             token: token,
@@ -128,8 +127,11 @@ export default function Dashboard() {
     );
   };
 
-  const handleLeadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Math.max(10, parseInt(e.target.value)); // Minimum value is 10
+
+
+
+  const handleLeadChange = (e: any) => {
+    const value = Math.max(10, e.target.value); // Minimum value is 10
     setLeads(value);
     setPrice(value * 5); // Update price
   };
@@ -195,31 +197,28 @@ export default function Dashboard() {
       <div className="flex justify-between border-b border-gray-300 bg-blue-400">
         <button
           onClick={() => setActiveTab("guide")}
-          className={`flex-1 text-center py-2 font-semibold ${
-            activeTab === "guide"
+          className={`flex-1 text-center py-2 font-semibold ${activeTab === "guide"
               ? "text-blue-500 border-b-3 border-blue-500"
               : "text-white"
-          }`}
+            }`}
         >
           Guide
         </button>
         <button
           onClick={() => setActiveTab("myRental")}
-          className={`flex-1 text-center py-2 font-semibold ${
-            activeTab === "myRental"
+          className={`flex-1 text-center py-2 font-semibold ${activeTab === "myRental"
               ? "text-blue-500 border-b-3 border-blue-500"
               : "text-white"
-          }`}
+            }`}
         >
           My Rentals
         </button>
         <button
           onClick={() => setActiveTab("usedLead")}
-          className={`flex-1 text-center py-2 font-semibold ${
-            activeTab === "usedLead"
+          className={`flex-1 text-center py-2 font-semibold ${activeTab === "usedLead"
               ? "text-blue-500 border-b-2 border-blue-500"
               : "text-white"
-          }`}
+            }`}
         >
           Used Lead
         </button>
@@ -246,7 +245,7 @@ export default function Dashboard() {
                   key={listing.id}
                   className="bg-white flex flex-col w-72 rounded-md shadow-md overflow-hidden mb-4"
                 >
-                  <div className="relative mod:w-72 mod:h-36 ssm:h-36 ssm:w-72 md:h-40 md:w-72 w-full sm:w-44 h-40">
+                  <div>
                     {listing.isVisible ? (
                       <Image
                         src={listing.imageUrl}
@@ -328,12 +327,11 @@ export default function Dashboard() {
                     Address: {lead.adress}
                   </p>
                   <div className="flex items-center justify-center gap-8 p-2 border-b border-gray-300 ">
-                    <div className="flex items-center space-x-2 w-10 h-10">
-                      <Image
-                        fill
+                    <div className="flex items-center space-x-2">
+                      <img
                         src={Customer.src}
                         alt={lead.customerName}
-                        className="object-contain rounded-full"
+                        className="w-10 h-10 rounded-full"
                       />
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">{lead.customerName}</span>

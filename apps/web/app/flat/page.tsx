@@ -13,19 +13,17 @@ interface WishlistProps {
   type: "flat" | "pg" | "room";
 }
 
-interface ListingResponse {
-  listings: ListingData[];
-}
 
-function Listing() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const lookingFor = searchParams.get("look") || "";
-  const city = searchParams.get("city") || "";
-  const townSector = searchParams.get("townSector") || "";
-  const [listingData, setListingData] = useState<ListingResponse | null>(null);
-  console.log("listingData", listingData);
-  const [saved, setSaved] = useState(false);
+export default function Listing() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const lookingFor = searchParams.get("look") || "";
+    const city = searchParams.get("city") || "";
+    const townSector = searchParams.get("townSector") || "";
+    const [listingData, setListingData] = useState<ListingData[]>([]);
+    console.log("listingData", listingData);
+    const [saved, setSaved] = useState(false);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -86,27 +84,51 @@ function Listing() {
     }
   };
 
-  return (
-    <>
-      <Navbar />
-      <SortFilter />
-      {listingData?.listings.map((listing: ListingData) => (
-        <div
-          key={listing.id}
-          onClick={() => handleListingClick(listing)}
-          className="w-full p-4 border rounded border-gray-300 flex gap-8 ssm:flex-col ssm:gap-0.5 mb-1.5 bg-gray-100 mt-1 ml:flex-row ml:gap-6 mod:flex-col ">
-          {/* Image Gallery */}
-          <div className="relative flex ssm:flex-row ssm:gap-3 ml:flex-col">
-            <div className="relative h-64 ssm:h-44">
-              <Image
-                src={listing.images && listing.images[0] ? listing.images[0] : "/default-image.jpg"}
-                alt="Main View"
-                height={256}
-                width={384}
-                className="h-full w-full object-cover rounded"
-              />
-            </div>
-          </div>
+    return (
+        <>
+
+            <Navbar />
+            <SortFilter />
+            {listingData?.listings?.map((listing: any) => (
+
+                <div
+                    key={listing.id}
+                    onClick={() => handleListingClick(listing)}
+                    className="w-full p-4 border rounded border-gray-300 flex gap-8 ssm:flex-col ssm:gap-0.5 mb-1.5 bg-gray-100 mt-1 ml:flex-row ml:gap-6 mod:flex-col ">
+                    {/* Image Gallery */}
+                    <div className="relative flex ssm:flex-row ssm:gap-3 ml:flex-col">
+                        <div className="relative h-64 ssm:h-44">
+                            <img
+                                src={listing.images[0]}
+                                alt="Main View"
+                                className="h-full w-full object-cover rounded"
+                            />
+                            <button
+                                // onClick={handlePreviousImage}
+                                className="absolute top-1/2 left-2 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full opacity-70 hover:opacity-100"
+                            >
+                                &lt;
+                            </button>
+                            <button
+                                // onClick={handleNextImage}
+                                className="absolute top-1/2 right-2 -translate-y-1/2 bg-black text-white p-2 rounded-full opacity-70 hover:opacity-100"
+                            >
+                                &gt;
+                            </button>
+
+                        </div>
+                        <div className="flex gap-1 justify-center ssm:flex-col ssm:gap-1.5 ml:flex-row">
+                            {listing.images.map((img: string, index: number) => (
+                                <img
+                                    key={index + 1}
+                                    src={img}
+                                    alt={`Thumbnail ${index}`}
+                                    className={`h-14 w-18 cursor-pointer rounded ssm:h-10 ssm:w-14 ml:h-12 ${index ? "border-2 border-black" : ""}`}
+                                // onClick={() => handleThumbnailClick(index)}
+                                />
+                            ))}
+                        </div>
+                    </div>
 
           {/* Property Details */}
           <div className="ssm:mt-0.5">
@@ -168,13 +190,5 @@ function Listing() {
         </div>
       ))}
     </>
-  );
-}
-
-export default function ListingComponent() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Listing />
-    </Suspense>
   );
 }

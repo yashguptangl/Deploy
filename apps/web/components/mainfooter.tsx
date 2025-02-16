@@ -12,18 +12,11 @@ export default function MainFooter(){
         <p className="text-sm sm:text-base">+91-9719507080</p>
         <p className="text-sm sm:text-base">info@roomlocus.com</p>
         
-        <div className="relative flex justify-center gap-5">
-  <div className="relative h-8 sm:h-10 w-8 sm:w-10">
-    <Image src={fb} alt="Facebook" fill className="object-contain" />
-  </div>
-  <div className="relative h-8 sm:h-10 w-8 sm:w-10">
-    <Image src={linkdin} alt="LinkedIn" fill className="object-contain" />
-  </div>
-  <div className="relative h-8 sm:h-10 w-8 sm:w-10">
-    <Image src={tw} alt="Twitter" fill className="object-contain" />
-  </div>
-</div>
-
+        <div className="flex justify-center gap-5">
+          <img className="h-8 sm:h-10" src={fb.src} alt="Facebook" />
+          <img className="h-8 sm:h-10" src={linkdin.src} alt="LinkedIn" />
+          <img className="h-8 sm:h-10" src={tw.src} alt="Twitter" />
+        </div>
         
         <p className="font-semibold text-xs sm:text-xl text-center">
           About Us | Terms of Use | Contact us | Help

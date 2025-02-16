@@ -171,6 +171,7 @@ model ContactLog {
     id            Int      @id @default(autoincrement())
     ownerId       Int
     userId        Int
+    ownerName    String
     user          User     @relation(fields: [userId], references: [id])
     owner         Owner    @relation(fields: [ownerId], references: [id])
     listingId     Int

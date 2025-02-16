@@ -1,4 +1,5 @@
 export interface FormData {
+<<<<<<< HEAD
     city: string;
     townSector: string;
     location: string;
@@ -27,3 +28,33 @@ export interface FormData {
     insideFacilities: string[];
     outsideFacilities: string[];
   }
+=======
+  city: string;
+  townSector: string;
+  location: string;
+  landmark: string;
+  Bhk: string;
+  maxprice: string;
+  minprice: string;
+  ageOfProperty: string;
+  waterSupply: string;
+  powerBackup: string;
+  noticePeriod: string;
+  security: string;
+  maintenance: string;
+  totalFlat: number;
+  offer: string;
+  listingShowNo: string;
+  careTaker: string;
+  adress: string;
+  furnishingType: string;
+  accomoType: string;
+  petsAllowed: string;
+  genderPrefer: string;
+  flatType: string;
+  parking: string[];
+  preferTenants: string[];
+  insideFacilities: string[];
+  outsideFacilities: string[];
+}
+>>>>>>> 8a7e56565f9b903706054d81064d7070b5afefdd
