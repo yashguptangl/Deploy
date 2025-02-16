@@ -6,22 +6,24 @@ import Delete from "../../../assets/delete.png";
 import axios from "axios";
 import Link from "next/link";
 type Tab = "guide" | "myRental" | "usedLead";
+import { LeadLog } from "../../../types/lead";
+import Image from "next/image";
+import { ListingItem } from "../../../types/listing";
 
-export default function Dashboard(prop: any) {
+
+export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("myRental"); // Default active tab
   const [showModal, setShowModal] = useState(false); // Show/Hide modal
   const [leads, setLeads] = useState(10); // Default number of leads
   const [price, setPrice] = useState(leads * 5); // Calculate price based on leads
   const [isRentalListOpen, setIsRentalListOpen] = useState(false);
-  const [listings, setListings] = useState<any[]>([]); // Ensure listings is always an array
-  const [token, setToken] = useState<string | null>(null);
+  const [listings, setListings] = useState<ListingItem[]>([]); // Ensure listings is always an array
   const [points, setPoints] = useState("");
-  const [usedLeads, setUsedLeads] = useState<any[]>([]);
+  const [usedLeads, setUsedLeads] = useState<LeadLog[]>([]);
 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setToken(token);
 
     if (token) {
       // Decode the payload
@@ -29,18 +31,19 @@ export default function Dashboard(prop: any) {
       const payload = payloadBase64 ? JSON.parse(atob(payloadBase64)) : null; // Decode Base64
       console.log("Payload:", payload);
 
-      // Fetch listings using the id from payload
-      fetchListings(token, payload.owner.id);
-      usedLeadData(token, payload.owner.id);
+      if(payload?.owner?.id){
+        fetchListings(token, payload.owner.id);
+        usedLeadData(token, payload.owner.id);
+      }
     }
-  }, []);
+  },[]);
 
 
 
   const usedLeadData = async (token: string, ownerId: string) => {
     try {
       const leadResponse = await axios.get(`http://localhost:3000/api/v1/owner/contact-logs/${ownerId}`,
-        { headers: { token } }
+        { headers: { token: token } }
       )
       setUsedLeads(leadResponse.data);
       console.log("Used Leads:", leadResponse.data);
@@ -73,7 +76,7 @@ export default function Dashboard(prop: any) {
     }
   };
 
-  const mapListing = async (data: any[], type: string, token: string): Promise<any[]> => {
+  const mapListing = async (data: ListingItem[], type: string, token: string): Promise<ListingItem[]> => {
     return Promise.all(data.map(async item => {
       const insideImageUrl = await fetchInsideImage(type, item.id, token);
       console.log(`Fetched image URL for ${type}-${item.id}: ${insideImageUrl}`);
@@ -85,10 +88,10 @@ export default function Dashboard(prop: any) {
         location: item.location,
         townSector: item.townSector,
         city: item.city,
-        Bhk: item.BHK,
+        BHK: item.BHK,
         security: item.security,
-        minprice: item.MinPrice,
-        maxprice: item.MaxPrice,
+        MinPrice: item.MinPrice,
+        MaxPrice: item.MaxPrice,
         isVisible: item.isVisible,
         isVerified: item.isVerified,
       };
@@ -98,7 +101,7 @@ export default function Dashboard(prop: any) {
   const fetchInsideImage = async (type: string, uniq: string, token: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/owner/images/${type}/${uniq}`,
+        `http://localhost:3000/api/v1/owner/images/${type}/${uniq},`,
         {
           headers: {
             token: token,
@@ -114,9 +117,9 @@ export default function Dashboard(prop: any) {
     }
   };
 
-  const toggleButton = (listingId: any) => {
-    setListings((prevListings: any) =>
-      prevListings.map((listing: any) =>
+  const toggleButton = (listingId: string) => {
+    setListings((prevListings) =>
+      prevListings.map((listing) =>
         listing.id === listingId ? { ...listing, isVisible: !listing.isVisible } : listing
       )
     );
@@ -125,8 +128,8 @@ export default function Dashboard(prop: any) {
 
 
 
-  const handleLeadChange = (e: any) => {
-    const value = Math.max(10, e.target.value); // Minimum value is 10
+  const handleLeadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(10, parseInt(e.target.value)); // Minimum value is 10
     setLeads(value);
     setPrice(value * 5); // Update price
   };
@@ -193,8 +196,8 @@ export default function Dashboard(prop: any) {
         <button
           onClick={() => setActiveTab("guide")}
           className={`flex-1 text-center py-2 font-semibold ${activeTab === "guide"
-              ? "text-blue-500 border-b-3 border-blue-500"
-              : "text-white"
+            ? "text-blue-500 border-b-3 border-blue-500"
+            : "text-white"
             }`}
         >
           Guide
@@ -202,8 +205,8 @@ export default function Dashboard(prop: any) {
         <button
           onClick={() => setActiveTab("myRental")}
           className={`flex-1 text-center py-2 font-semibold ${activeTab === "myRental"
-              ? "text-blue-500 border-b-3 border-blue-500"
-              : "text-white"
+            ? "text-blue-500 border-b-3 border-blue-500"
+            : "text-white"
             }`}
         >
           My Rentals
@@ -211,8 +214,8 @@ export default function Dashboard(prop: any) {
         <button
           onClick={() => setActiveTab("usedLead")}
           className={`flex-1 text-center py-2 font-semibold ${activeTab === "usedLead"
-              ? "text-blue-500 border-b-2 border-blue-500"
-              : "text-white"
+            ? "text-blue-500 border-b-2 border-blue-500"
+            : "text-white"
             }`}
         >
           Used Lead
@@ -235,25 +238,27 @@ export default function Dashboard(prop: any) {
             {listings.length === 0 ? (
               <p>No Listings Available</p>
             ) : (
-              listings.map((listing: any) => (
+              listings.map((listing) => (
                 <div
                   key={listing.id}
                   className="bg-white flex flex-col w-72 rounded-md shadow-md overflow-hidden mb-4"
                 >
-                  <div>
+                  <div className="relative mod:w-72 mod:h-36 ssm:h-36 ssm:w-72 md:h-40 md:w-72 w-full sm:w-44 h-40"> 
                     {listing.isVisible ? (
-                      <img
+                      <Image
                         src={listing.imageUrl}
+                        fill
                         alt="Room"
-                        className="w-full sm:w-44 h-40 object-cover p-2 md:h-40 md:w-72 rounded-xl mod:w-72 mod:h-36 ssm:h-36 ssm:w-72"
+                        className=" object-cover p-2  rounded-xl "
                         onError={(e) => {
                           e.currentTarget.src = Bedroom.src; // Fallback image
                         }}
                       />
                     ) : (
-                      <img
+                      <Image
                         src={listing.imageUrl}
                         alt="Room"
+                        fill
                         className="w-full sm:w-44 h-40 object-cover p-2 md:h-40 md:w-72 rounded-xl mod:w-72 mod:h-36 ssm:h-36 ssm:w-72 opacity-50"
                         onError={(e) => {
                           e.currentTarget.src = Bedroom.src; // Fallback image
@@ -280,10 +285,10 @@ export default function Dashboard(prop: any) {
                       {listing.location}, {listing.townSector}, {listing.city}
                     </p>
                     <h2 className="text-xl font-medium ssm:text-xs mod:text-base">
-                      {listing.Bhk} BHK {listing.type} | Security {listing.security}{" "}
+                      {listing.BHK} BHK {listing.type} | Security {listing.security}{" "}
                     </h2>
                     <p className="text-green-600 font-medium text-sm">
-                      Rent : {listing.minprice} - {listing.maxprice}
+                      Rent : {listing.MinPrice} - {listing.MaxPrice}
                     </p>
                     <p className="text-sm ">
                       {listing.isVisible ? "Listing is show in web" : "Listing is off"}
@@ -312,17 +317,19 @@ export default function Dashboard(prop: any) {
             {usedLeads.logs.length === 0 ? (
               <p className="text-center">No leads available</p>
             ) : (
-              usedLeads.logs.map((lead: any) => (
+              usedLeads.logs.map((lead: LeadLog) => (
                 <div key={lead.id} className="bg-white rounded-md shadow-md p-4 mb-4">
                   <p className="p-2 text-base flex items-center justify-center ">
                     Address: {lead.adress}
                   </p>
                   <div className="flex items-center justify-center gap-8 p-2 border-b border-gray-300 ">
-                    <div className="flex items-center space-x-2">
-                      <img
+                    <div className="flex items-center space-x-2 ">
+                      <Image
                         src={Customer.src}
                         alt={lead.customerName}
-                        className="w-10 h-10 rounded-full"
+                        width={30}
+                        height={30}
+                        className=" object-contain rounded-full"
                       />
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">{lead.customerName}</span>
@@ -334,10 +341,13 @@ export default function Dashboard(prop: any) {
                       <button className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
                         Call
                       </button>
-                      <img
+
+                      <Image
                         src={Delete.src}
                         alt="Delete"
-                        className="w-8 h-8 cursor-pointer"
+                        className="cursor-pointer"
+                        height={30}
+                        width={30}
                       />
                     </div>
                   </div>

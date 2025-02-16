@@ -25,12 +25,12 @@ const signupSchema = z
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function Signup({ title, titleDetail, word }: { title: string, titleDetail: string, word: string }) {
+export default function Signup() {
   const router = useRouter();
    const {
       register,
       handleSubmit,
-      formState: { errors, isSubmitting },
+      formState: { isSubmitting },
     } = useForm<SignupFormValues>({
       resolver: zodResolver(signupSchema),
     });
@@ -47,9 +47,9 @@ export default function Signup({ title, titleDetail, word }: { title: string, ti
   
         console.log("Signup successful:", response.data); // Logs the response from the server
         router.push("/owner/verify");
-      } catch (error: any) {
-        console.error("Signup error:", error.response?.data || error.message);
-        alert(error.response?.data?.message || "An error occurred during signup.");
+      } catch (error) {
+        console.error("Signup error:", axios.isAxiosError(error) && axios.isAxiosError(error) && error.response?.data );
+        alert(axios.isAxiosError(error) && error.response?.data?.message || "An error occurred during signup.");
       }
     };
   return (
