@@ -5,7 +5,6 @@ import Customer from "../../../assets/customer.png";
 import Delete from "../../../assets/delete.png";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { LeadLog } from "../../../types/lead";
 import { ListingItem } from "../../../types/listing";

@@ -55,7 +55,6 @@ ownerDashboard.post("/contact-owner",authenticate , async (req: AuthenticatedReq
                 propertyType,
                 ownerName: owner.username,
                 ownerPhone: owner.mobile,
-                ownerName: owner.username, // Add the missing ownerName property
                 expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Valid for 30 days
             },
         });
