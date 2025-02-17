@@ -43,7 +43,7 @@ export default function FlatListingForm() {
         townSector: selectedTown,
       };
       const response = await axios.post(
-        "http://localhost:3000/api/v1/owner/flat",
+        "http://staging-http-server.roomlocus.com/api/v1/owner/flat",
         formData,
         {
           headers: {

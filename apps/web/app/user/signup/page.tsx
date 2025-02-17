@@ -58,8 +58,8 @@ export default function Signup() {
 
   
   return (
-    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-8">
-      <div className="w-full mb-8 lg:mb-0">
+    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-3">
+      <div className="w-full mb-2 lg:mb-0">
         <SideDetail
           title="Welcome to Roomlocus"
           titleDetail="Get verified room"

@@ -42,7 +42,7 @@ export default function ListingDetail() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/owner/contact-owner/`, {
+      const response = await fetch(`http://staging-http-server.roomlocus.com/api/v1/owner/contact-owner/`, {
         method: 'POST',
         headers: {
           'token': token,
