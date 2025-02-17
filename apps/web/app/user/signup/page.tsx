@@ -38,7 +38,7 @@ export default function Signup() {
   const onSubmit = async (data: SignupFormValues) => {
     try {
       console.log("Data being sent to API:", data); // Logs the form data
-      const response = await axios.post("http://localhost:3000/api/v1/user/signup", {
+      const response = await axios.post("http://staging-http-server.roomlocus.com/api/v1/user/signup", {
         username: data.username,
         mobile: data.mobile,
         email: data.email,
@@ -58,8 +58,8 @@ export default function Signup() {
 
   
   return (
-    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-8">
-      <div className="w-full mb-8 lg:mb-0">
+    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-3">
+      <div className="w-full mb-2 lg:mb-0">
         <SideDetail
           title="Welcome to Roomlocus"
           titleDetail="Get verified room"

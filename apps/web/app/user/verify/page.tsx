@@ -30,7 +30,7 @@ export default function Verify() {
     const onSubmit = async (data: VerifyFormValues) => {
         try {
             console.log("Data being sent to API:", data);
-            const response = await axios.post("http://localhost:3000/api/v1/user/verify-otp", {
+            const response = await axios.post("http://staging-http-server.roomlocus.com/api/v1/user/verify-otp", {
                 mobile: data.mobile,
                 otp: data.otp,
             });
@@ -44,7 +44,7 @@ export default function Verify() {
     const handleResendOTP = async (data: VerifyFormValues) => {
         try {
             setResendLoading(true); // Set loading state
-            const response = await axios.post("http://localhost:3000/api/v1/user/resend-otp", {
+            const response = await axios.post("http://staging-http-server.roomlocus.com/api/v1/user/resend-otp", {
                 mobile: data.mobile,
             });
             alert(response.data.message || "OTP sent successfully!");
@@ -61,8 +61,8 @@ export default function Verify() {
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-8">
-                <div className="w-full mb-8 lg:mb-0">
+            <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-3">
+                <div className="w-full mb-2 lg:mb-0">
                     <SideDetail
                         title="Welcome to Roomlocus"
                         titleDetail="Get verified room"

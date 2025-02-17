@@ -30,7 +30,7 @@ export default function LoginSignup() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/user/login",
+        "http://staging-http-server.roomlocus.com/api/v1/user/login",
         data,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -64,8 +64,8 @@ export default function LoginSignup() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-8 mb-24">
-      <div className="w-full mb-8 lg:mb-0">
+    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-3 mb-8">
+      <div className="w-full mb-2 lg:mb-0">
         <SideDetail title="Welcome to Roomlocus" titleDetail="Get verified room" word="Easy Way" />
       </div>
 

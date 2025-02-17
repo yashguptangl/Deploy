@@ -44,7 +44,7 @@ export default function PGListingForm() {
         ...data, city: selectedCity, townSector: selectedTown,
 
       };
-      const response = await axios.post("http://localhost:3000/api/v1/owner/pg",
+      const response = await axios.post("http://staging-http-server.roomlocus.com/api/v1/owner/pg",
         formData,
         {
           headers: {

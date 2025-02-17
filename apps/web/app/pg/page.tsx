@@ -70,7 +70,7 @@ function Listing() {
   const handleWishlist = async ({ userId, listingId }: WishlistProps) => {
     try {
       if (!saved) {
-        await axios.post("http://localhost:3000/api/v1/user/wishlist", {
+        await axios.post("http://staging-http-server.roomlocus.com/api/v1/user/wishlist", {
           userId: userId,
           listingId: listingId,
           type: "flat"
@@ -82,7 +82,7 @@ function Listing() {
         });
         setSaved(true);
       } else {
-        await axios.delete(`http://localhost:3000/api/v1/user/wishlist/${listingId}`, {
+        await axios.delete(`http://staging-http-server.roomlocus.com/api/v1/user/wishlist/${listingId}`, {
           headers: {
             'token': token,
             "Content-Type": "application/json",
