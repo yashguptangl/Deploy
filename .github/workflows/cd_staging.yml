@@ -23,7 +23,10 @@ jobs:
         run: |
           ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@13.200.33.123 << 'EOF'
             cd Deploy && git pull
-            sudo npm install -g pm2
+            sudo apt update
+            sudo apt install -y npm
+            supdo npm install -g pm2
+            git pull
             npm install
             npm run build
             pm2 restart all
