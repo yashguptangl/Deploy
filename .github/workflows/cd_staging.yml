@@ -22,7 +22,7 @@ jobs:
       - name: SSH into server and deploy
         run: |
           ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@13.200.33.123 << 'EOF'
-            cd Deploy && git pull
+            cd Deploy && git pull origin main && source ~/.bashrc
             sudo npm install -g pm2
             npm install
             npm run build
