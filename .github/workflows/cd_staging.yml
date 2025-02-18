@@ -1,0 +1,29 @@
+name: Deploy to staging
+on: 
+  push:
+    branches:
+      - "main"
+    
+jobs:
+  redeploy_everything:
+    name: Deploy Everything to staging
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
+          chmod 600 ~/ssh_key
+
+      - name: SSH into server and deploy
+        run: |
+          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@your_server_ip << 'EOF'
+            cd Deploy && git pull
+            npm install
+            npm run build
+            pm2 restart all
+          EOF

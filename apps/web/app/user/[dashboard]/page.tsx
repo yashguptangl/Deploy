@@ -28,7 +28,11 @@ export default function User() {
     const fetchWishlist = async () => {
       try {
         const { data: wishListData } = await axios.get(
+<<<<<<< HEAD
           `http://lstaging-http-server.roomlocus.com/api/v1/user/wishlist/${userId}`
+=======
+          `http://staging-http-server.roomlocus.com/api/v1/user/wishlist/${userId}`
+>>>>>>> production
         );
         setWishlist(wishListData);
       } catch (err) {

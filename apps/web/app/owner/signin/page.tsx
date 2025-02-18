@@ -32,7 +32,11 @@ export default function LoginSignUp() {
     const onSubmit = async (data: LoginFormValues) => {
         try {
             const response = await axios.post(
+<<<<<<< HEAD
                 "http://staging-http-server.roomlocus.com0/api/v1/owner/login",
+=======
+                "http://staging-http-server.roomlocus.com/api/v1/owner/login",
+>>>>>>> production
                 data,
                 {
                     headers: {
