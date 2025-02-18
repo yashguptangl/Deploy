@@ -30,7 +30,6 @@ function Listing() {
 
   useEffect(() => {
     async function fetchData() {
-<<<<<<< HEAD
       try {
         const response = await fetch(`http://staging-http-server.roomlocus.com/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
         if (response.status === 404) {
@@ -44,10 +43,6 @@ function Listing() {
         console.error("Error fetching listings:", error);
         setNoListings(true);
       }
-=======
-      const data = await fetch(`http://staging-http-server.roomlocus.com/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
-      setListingData(await data.json());
->>>>>>> production
     }
     fetchData();
   }, [lookingFor, city, townSector]);
