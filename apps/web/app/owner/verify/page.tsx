@@ -31,6 +31,7 @@ export default function Verify() {
       console.log("Data being sent to API:", data);
       const response = await axios.post(
         "http://http-server.roomlocus.com/api/v1/owner/verify-otp",
+
         {
           mobile: data.mobile,
           otp: data.otp,
