@@ -15,7 +15,7 @@ app.options('*', cors()); // Handle preflight requests for all routes
 
 // Use CORS middleware
 app.use(cors({
-    origin : 'http://staging-fe.roomlocus.com',
+    origin : 'http://fe.roomlocus.com',
     methods : ['GET','POST','PUT','DELETE'],
 }));
 
@@ -29,7 +29,6 @@ app.use("/api/v1/user", userDashboard);
 app.get("/",(req,res) => {
     res.send("Hello World");
 })
-
 
 app.listen(3001,() =>{
     console.log("server started");
