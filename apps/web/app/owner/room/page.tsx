@@ -43,7 +43,7 @@ export default function RoomListingForm() {
         ...data, city: selectedCity, townSector: selectedTown,
 
       };
-      const response = await axios.post("http://staging-http-server.roomlocus.com/api/v1/owner/room",
+      const response = await axios.post("http://http-server.roomlocus.com/api/v1/owner/room",
         formData,
         {
           headers: {

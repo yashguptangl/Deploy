@@ -44,7 +44,7 @@ export default function Dashboard() {
   const usedLeadData = async (token: string, ownerId: string) => {
     try {
       const leadResponse = await axios.get(
-        `http://staging-http-server.roomlocus.com/api/v1/owner/contact-logs/${ownerId}`,
+        `http://http-server.roomlocus.com/api/v1/owner/contact-logs/${ownerId}`,
         { headers: { token: token } }
       );
       setUsedLeads(leadResponse.data);
@@ -57,7 +57,7 @@ export default function Dashboard() {
   const fetchListings = async (token: string, ownerId: string) => {
     try {
       const response = await axios.get(
-        `http://staging-http-server.roomlocus.com/api/v1/owner/${ownerId}/listings`,
+        `http://http-server.roomlocus.com/api/v1/owner/${ownerId}/listings`,
         { headers: { token } }
       );
 
@@ -104,7 +104,7 @@ export default function Dashboard() {
   const fetchInsideImage = async (type: string, uniq: string, token: string) => {
     try {
       const response = await axios.get(
-        `http://staging-http-server.roomlocus.com/api/v1/owner/images/${type}/${uniq}`,
+        `http://http-server.roomlocus.com/api/v1/owner/images/${type}/${uniq}`,
         {
           headers: {
             token: token,

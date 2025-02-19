@@ -26,7 +26,7 @@ export default function Upload() {
 
       // Fetch presigned URLs from the backend
       const { data } = await axios.post(
-        "http://staging-http-server.roomlocus.com/api/v1/owner/pg/images/presigned-urls",
+        "http://http-server.roomlocus.com/api/v1/owner/pg/images/presigned-urls",
         { pgId },
         {
           headers: {

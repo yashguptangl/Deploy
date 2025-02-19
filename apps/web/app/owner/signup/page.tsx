@@ -38,7 +38,7 @@ export default function Signup() {
     const onSubmit = async (data: SignupFormValues) => {
       try {
         console.log("Data being sent to API:", data); // Logs the form data
-        const response = await axios.post("http://staging-http-server.roomlocus.com/api/v1/owner/signup", {
+        const response = await axios.post("http://http-server.roomlocus.com/api/v1/owner/signup", {
           username: data.username,
           mobile: data.mobile,
           email: data.email,

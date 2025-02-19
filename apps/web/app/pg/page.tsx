@@ -29,7 +29,7 @@ function Listing() {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch(`http://staging-http-server.roomlocus.com/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
+      const data = await fetch(`http://http-server.roomlocus.com/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
       setListingData(await data.json());
     }
     fetchData();
@@ -61,7 +61,7 @@ function Listing() {
   const handleWishlist = async ({ userId, listingId }: WishlistProps) => {
     try {
       if (!saved) {
-        await axios.post("http://staging-http-server.roomlocus.com/api/v1/user/wishlist", {
+        await axios.post("http://http-server.roomlocus.com/api/v1/user/wishlist", {
           userId: userId,
           listingId: listingId,
           type: "flat"
