@@ -40,7 +40,7 @@ export default function LoginSignUp() {
                     },
                 }
             );
-
+            
             if (response.status === 403) {
                 // Redirect to verify page for unverified accounts
                 router.push("/owner/verify");
