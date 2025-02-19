@@ -139,7 +139,7 @@ function Listing() {
             <p className="text-3xl  text-black font-medium ssm:text-base md:text-3xl">
               {listing.location} {listing.city} {listing.townSector}
             </p>
-            <p className="text-xl  text-gray-600 font-medium ssm:text-base">{listing.BHK} BHK PG
+            <p className="text-xl  text-gray-600 font-medium ssm:text-base">{listing.BHK} BHK Room
               <span className="text-lg font-medium text-blue-300 ssm:text-sm ml-2">Security {listing.security}{" "}</span>
               <span className="text-pink-600 ml-2 text-lg font-medium ssm:text-xs">
                 Maintenance {listing.maintenance}
@@ -152,7 +152,7 @@ function Listing() {
               <p className="text-lg font-medium text-gray-600 ml-24 ssm:text-sm ssm:ml-32 mod:ml-40">
                 MIN &nbsp; &nbsp; &nbsp; &nbsp; MAX
               </p>
-              <span className="text-lg ssm:text-xs text-gray-700 ml:text-xs ml:ml-16 lg:text-sm lg:ml-28 ssm:text-center">All PG Price Different</span>
+              <span className="text-lg ssm:text-xs text-gray-700 ml:text-xs ml:ml-16 lg:text-sm lg:ml-28 ssm:text-center">All Room Price Different</span>
             </div>
 
             {/* Tags */}
