@@ -21,8 +21,13 @@ jobs:
 
       - name: SSH into server and deploy
         run: |
-          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@your_server_ip << 'EOF'
-            cd Deploy && git pull
+          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@13.200.33.123 << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+            nvm use 14
+            cd Deploy
+            git pull origin main
             npm install
             npm run build
             pm2 restart all
