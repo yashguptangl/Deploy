@@ -22,8 +22,12 @@ jobs:
       - name: SSH into server and deploy
         run: |
           ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@13.200.33.123 << 'EOF'
-            cd Deploy && git pull origin main && export PATH=/home/ubuntu/.nvm/versions/node/v23.8.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-            sudo npm install -g pm2
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+            nvm use 14
+            cd Deploy
+            git pull origin main
             npm install
             npm run build
             pm2 restart all
