@@ -64,11 +64,7 @@ export default function LoginSignup() {
   };
 
   return (
-<<<<<<< HEAD
     <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-3 mb-8">
-=======
-    <div className="flex flex-col lg:flex-row justify-center lg:justify-evenly py-3 mb-14">
->>>>>>> production
       <div className="w-full mb-2 lg:mb-0">
         <SideDetail title="Welcome to Roomlocus" titleDetail="Get verified room" word="Easy Way" />
       </div>

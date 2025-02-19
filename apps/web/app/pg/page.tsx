@@ -30,10 +30,9 @@ function Listing() {
   const [noListings, setNoListings] = useState(false);
 
   useEffect(() => {
-<<<<<<< HEAD
       async function fetchData() {
         try {
-          const response = await fetch(`http://localhost:3000/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
+          const response = await fetch(`http://staging-http-server.roomlocus.com/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
           if (response.status === 404) {
             setNoListings(true);
           } else {
@@ -48,15 +47,6 @@ function Listing() {
       }
       fetchData();
     }, [lookingFor, city, townSector]);
-=======
-    async function fetchData() {
-      const data = await fetch(`http://staging-http-server.roomlocus.com/api/v1/listing/search/?looking_for=${lookingFor}&city=${city}&townSector=${townSector}`);
-      setListingData(await data.json());
-    }
-    fetchData();
-    console.log("listingData", listingData);
-  }, [lookingFor, city, townSector]); // eslint-disable-next-line react-hooks/exhaustive-deps
->>>>>>> production
 
   const handleListingClick = (listing: ListingData) => {
     sessionStorage.setItem("selectedListing", JSON.stringify(listing));
