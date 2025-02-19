@@ -40,11 +40,15 @@ export default function LoginSignUp() {
                     },
                 }
             );
-            
+
             if (response.status === 403) {
                 // Redirect to verify page for unverified accounts
                 router.push("/owner/verify");
                 return; // Stop further execution
+            }
+            if (response.status === 401) {
+                router.push("/owner/signup");
+                return;
             }
 
             const { token } = response.data;
@@ -57,15 +61,6 @@ export default function LoginSignUp() {
         } catch (error) {
             console.error("Error logging in:", error);
 
-            if (axios.isAxiosError(error) && error.response?.status === 403) {
-                alert("Account not verified. Redirecting to verification page.");
-                router.push("/owner/verify");
-            } else if ( axios.isAxiosError(error) && error.response?.status === 401) {
-                alert("Account not found. Redirecting to signup.");
-                router.push("/owner/signup");
-            } else {
-                alert(axios.isAxiosError(error) && error.response?.data?.message || "An error occurred. Please try again.");
-            }
         }
     };
 
