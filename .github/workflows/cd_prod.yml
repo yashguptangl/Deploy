@@ -21,7 +21,7 @@ jobs:
 
       - name: SSH into server and deploy
         run: |
-          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@ << 'EOF'
+          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@13.203.108.47 << 'EOF'
             cd Deploy && git pull
             npm install
             npm run build
