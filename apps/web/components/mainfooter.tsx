@@ -12,13 +12,28 @@ export default function MainFooter() {
 
       <div className="relative flex justify-center gap-5">
         <div className="relative h-8 sm:h-10 w-8 sm:w-10">
-          <Image src={fb} alt="Facebook" fill className="object-contain" />
+          <Image 
+          src={fb}
+          alt="Facebook" 
+          fill
+          onClick={() => window.open("https://www.facebook.com/roomlocus/", "_blank")}
+          className="object-contain" />
         </div>
         <div className="relative h-8 sm:h-10 w-8 sm:w-10">
-          <Image src={linkdin} alt="LinkedIn" fill className="object-contain" />
+          <Image 
+          src={linkdin}
+          alt="LinkedIn" 
+          fill 
+          onClick={() => window.open("https://in.linkedin.com/company/roomlocus", "_blank")}
+          className="object-contain" />
         </div>
         <div className="relative h-8 sm:h-10 w-8 sm:w-10">
-          <Image src={tw} alt="Twitter" fill className="object-contain" />
+          <Image 
+          src={tw} 
+          alt="Instagram" 
+          onClick={() => window.open("https://www.instagram.com/roomlocus/", "_blank")}
+          fill 
+          className="object-contain" />
         </div>
       </div>
 
